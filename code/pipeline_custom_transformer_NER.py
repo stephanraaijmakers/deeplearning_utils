@@ -12,7 +12,7 @@ import pandas as pd
 def get_data(fname):
     df=pd.read_csv(fname,encoding="ISO-8859-1")
     df=df[:5000]
-    df=df.fillna(method='ffill')
+    df=df.fillna("UNKN")
     X = df.drop('Tag', axis=1)
     y=df.Tag.values
     vect=DictVectorizer(sparse=False)
@@ -27,6 +27,7 @@ def main():
     pipeline.fit(X_train, y_train)
     predicted = pipeline.predict(X_test)    
     print("Accuracy:",np.mean(predicted == y_test))
+
 
 
 if __name__=="__main__":
