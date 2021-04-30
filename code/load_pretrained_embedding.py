@@ -43,7 +43,7 @@ def train_model(train_documents, test_documents, labels, max_document_length, em
     (X_train, X_test, vocab_size)=tokenize_pad(train_documents, test_documents, max_document_length) 
     embedding_matrix=load_w2v_embedding(embedding_fname, vocab_size, emb_dimension)
     model = Sequential()
-    emb = Embedding(vocab_size, 100, weights=[embedding_matrix], input_length=4, trainable=True) # or False
+    emb = Embedding(vocab_size, 100, weights=[embedding_matrix], input_length=max_document_length, trainable=True) # or False
     model.add(emb)
     model.add(Flatten())
     model.add(Dense(1, activation='sigmoid'))
