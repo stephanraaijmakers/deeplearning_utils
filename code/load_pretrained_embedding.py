@@ -9,14 +9,16 @@ from tensorflow.keras.layers import Embedding
 
 # Not tested
 
-def tokenize_pad(docs, max_doc_len):
+def tokenize_pad(train_docs, test_docs, max_doc_len):
     #docs = ['a b c','d e f']
     tokenizer = Tokenizer()
-    tokenizer.fit_on_texts(docs)
+    tokenizer.fit_on_texts(train_docs+test_docs)
     vocab_size = len(tokenizer.word_index) + 1
-    encoded_docs = tokenizer.texts_to_sequences(docs)
-    padded_docs = pad_sequences(encoded_docs, maxlen=max_doc_len, padding='post')
-    return (padded_docs, vocab_size)
+    encoded_train = tokenizer.texts_to_sequences(train_docs)
+    encoded_test = tokenizer.texts_to_sequences(test_docs)
+    padded_train = pad_sequences(encoded_train, maxlen=max_doc_len, padding='post')
+    padded_test = pad_sequences(encoded_test, maxlen=max_doc_len, padding='post')
+    return (padded_train,padded_test, vocab_size)
 
 
 def load_w2v_embedding(fname, vocab_size, emb_dimension):
@@ -37,8 +39,8 @@ def load_w2v_embedding(fname, vocab_size, emb_dimension):
     return embedding_matrix
 
 
-def train_model(documents, labels, max_document_length, embedding_fname):
-    (X, vocab_size)=tokenize_pad(documents, max_document_length) 
+def train_model(train_documents, test_documents, labels, max_document_length, embedding_fname):
+    (X_train, X_test, vocab_size)=tokenize_pad(train_documents, test_documents, max_document_length) 
     embedding_matrix=load_w2v_embedding(embedding_fname, vocab_size, emb_dimension)
     model = Sequential()
     emb = Embedding(vocab_size, 100, weights=[embedding_matrix], input_length=4, trainable=True) # or False
