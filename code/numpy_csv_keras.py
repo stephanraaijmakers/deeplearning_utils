@@ -16,8 +16,8 @@ def create_model(input_dim):
 
 def train_model_from_csv(csv_filename):
     data = np.genfromtxt(csv_filename, delimiter=',',skip_header=1)
-    nb_columns=data.shape[1]
-    model=create_model(nb_columns-1) # last column = y (label)
+    nb_columns=data.shape[1]-1
+    model=create_model(nb_columns) # last column = y (label)
     X = data[:, :nb_columns]
     y = data[:, nb_columns]
     model.fit(X,y,epochs=100,validation_split=0.2)
