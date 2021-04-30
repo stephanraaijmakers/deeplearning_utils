@@ -46,7 +46,7 @@ def train_model(train_documents, test_documents, labels, max_document_length, em
     emb = Embedding(vocab_size, embedding_dim, weights=[embedding_matrix], input_length=max_document_length, trainable=True) # or False
     model.add(emb)
     model.add(Flatten())
-    model.add(Dense(1, activation='sigmoid'))
+    model.add(Dense(1, activation='sigmoid')) # for binary labels; change if needed 
     model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
     model.fit(padded_docs, labels, epochs=50, verbose=0)
     loss, accuracy = model.evaluate(padded_docs, labels, verbose=0)
