@@ -39,7 +39,7 @@ def load_w2v_embedding(fname, vocab_size, emb_dimension):
     return embedding_matrix
 
 
-def train_model(train_documents, test_documents, labels, max_document_length, embedding_fname, embedding_dim):
+def train_model(train_documents, test_documents, train_labels, test_label, max_document_length, embedding_fname, embedding_dim):
     (X_train, X_test, vocab_size)=tokenize_pad(train_documents, test_documents, max_document_length) 
     embedding_matrix=load_w2v_embedding(embedding_fname, vocab_size, embedding_dim)
     model = Sequential()
@@ -48,8 +48,8 @@ def train_model(train_documents, test_documents, labels, max_document_length, em
     model.add(Flatten())
     model.add(Dense(1, activation='sigmoid')) # for binary labels; change if needed 
     model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
-    model.fit(padded_docs, labels, epochs=50, verbose=0)
-    loss, accuracy = model.evaluate(padded_docs, labels, verbose=0)
+    model.fit(X_train, train_labels, epochs=50, verbose=0)
+    loss, accuracy = model.evaluate(X_test, test_labels, verbose=0)
     print('Accuracy: %f' % (accuracy*100))
 
 
