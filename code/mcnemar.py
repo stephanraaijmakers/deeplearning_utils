@@ -1,4 +1,5 @@
 from statsmodels.stats.contingency_tables import mcnemar
+import random
 
 def make_contingency_table(results_1, results_2, ground_truth, alpha=.05):
     assert len(results_1)==len(results_2)==len(ground_truth),"Error: incompatible sizes."
@@ -21,11 +22,13 @@ def make_contingency_table(results_1, results_2, ground_truth, alpha=.05):
             score_2=1
             performance_2+=1
         Results[(score_1,score_2)]+=1
+    # see https://en.wikipedia.org/wiki/McNemar%27s_test
     table=[[Results[(1,1)],Results[(1,0)]],
            [Results[(0,1)],Results[(0,0)]]]
+    m = mcnemar(table, exact=False) # Use False for large samples, and True for small samples (<100)
+    # See https://www.statsmodels.org/stable/generated/statsmodels.stats.contingency_tables.mcnemar.html
 
-    m = mcnemar(table, exact=True)
-    print('McNemar statistic=%.3f, p-value=%.3f' % (m.statistic, m.pvalue))
+    print('McNemar statistic=%.6f, p-value=%.3f' % (m.statistic, m.pvalue))
     
     if m.pvalue > alpha:
         print("Failure to reject H0. No significant difference between classifier A and classifier B.")
@@ -36,4 +39,7 @@ def make_contingency_table(results_1, results_2, ground_truth, alpha=.05):
         else:
             print("B is better than A")
 
-make_contingency_table([1,2,3,4,1,2,3,4],[1,1,1,1,2,2,2,2],[1,2,3,4,1,2,3,4])
+classifier_1=random.sample(range(0,100),100)
+classifier_2=random.sample(range(0,100),100)
+gt=list(range(100))
+make_contingency_table(classifier_1,classifier_2,gt)
